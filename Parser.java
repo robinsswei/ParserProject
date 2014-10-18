@@ -19,25 +19,36 @@ import ast.*;
  *  
  *  TYPE  ->  ‘int’
  *        ->  ‘boolean’
+ *        ->  ‘float’
+ *        ->  ‘char’
  *
  *  FUNHEAD  -> '(' (D list ',')? ')'  ==> formals<br>
  *
  *  S -> ‘if’ E ‘then’ BLOCK ‘else’ BLOCK  ==> if
+ *    -> ‘if’ E ‘then’ BLOCK           ==> if
  *    -> ‘while’ E BLOCK               ==> while
  *    -> ‘return’ E                    ==> return
  *    -> BLOCK
- *    -> NAME ‘=’ E                    ==> assign<br>
+ *    -> NAME ‘=’ E                    ==> assign
+ *    -> ‘do’ BLOCK ‘while’ E          ==> repeat
  *  
  *  E -> SE
  *    -> SE ‘==’ SE   ==> =
  *    -> SE ‘!=’ SE   ==> !=
  *    -> SE ‘<’  SE   ==> <
+ *    -> SE ‘>’  SE   ==> >
  *    -> SE ‘<=’ SE   ==> <=
+ *    -> SE ‘>=’ SE   ==> >=
  *  
  *  SE  ->  T
  *      ->  SE ‘+’ T  ==> +
  *      ->  SE ‘-‘ T  ==> -
  *      ->  SE ‘|’ T  ==> or
+ * 
+ *  SE  ->  T
+ *      ->  T ‘+’ SE  ==> +
+ *      ->  T ‘-‘ SE  ==> -
+ *      ->  T ‘|’ SE ==> or
  *  
  *  T  -> F
  *     -> T ‘*’ F  ==> *
@@ -47,8 +58,13 @@ import ast.*;
  *  F  -> ‘(‘ E ‘)’
  *     -> NAME
  *     -> <int>
- *     -> NAME '(' (E list ',')? ')' ==> call<br>
- *  
+ *     -> NAME '(' (E list ',')? ')' ==> call
+ *     -> <float>
+ *     -> <char>
+ *     -> <ScientificN>
+ *     -> ‘!’ E
+ *     -> ‘-’ E
+ * 
  *  NAME  -> <id>
  *  </pre>
 */
@@ -365,6 +381,11 @@ public class Parser {
  *         -> name
  *         -> <int>
  *         -> name '(' (e list ',')? ')' ==> call
+ *         -> <float>
+ *         -> <char>
+ *         -> <ScientificN>
+ *         -> ‘!’ E
+ *         -> ‘-’ E
  *  </pre>
  *  @return the tree corresponding to the factor expression
  *  @exception SyntaxError - thrown for any syntax error
