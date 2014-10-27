@@ -243,12 +243,12 @@ public class Parser {
             t.addKid(rExpr());
             expect(Tokens.Then);
             t.addKid(rBlock());
-            scan();
             if(isNextTok(Tokens.Else)){
 	            scan();
 	            t.addKid(rBlock());
+	            return t;
 	        }else     
-	        	return t;
+	            return t;
         }
          
         // 'while' e block  ==> while
@@ -353,6 +353,24 @@ public class Parser {
         return kid;
     }
     
+    // Or in this way
+    public AST rSimpleExpr() throws SyntaxError {
+    	AST t,left,right,kid,seT;
+    	seT=left=rTerm();
+    	if((t=getAddOperTree())!= null){
+    		seT=t;
+    		t.addKid(left);
+    		right=rTerm();
+    		while((kid=getAddOperTree())!=null){
+    			kid.addKid(right);
+    			t.addKid(kid);
+    			t=kid;
+    			right=rTerm();
+    		}
+    		t.addKid(right);
+    	}
+    	return seT;
+    }
 */
     
 /** <pre>
